@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport"
+    content="width=device-width">
+  <title></title>
+
+  <link rel="preconnect"
+    href="https://fonts.googleapis.com">
+  <link rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=swap"
+    rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    .font-noto-color-emoji {
+      font-family: "Noto Color Emoji", system-ui;
+      font-weight: 400;
+      font-style: normal;
+    }
+
+    .grid__group-emojis {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 0;
+    }
+
+    .emoji__div {
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .grid__emoji {
+      font-size: 7vw;
+      height: 12vw;
+      width: 12vw;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  </style>
+
+</head>
+
+<body>
+  <script>
+    const groups = [
+      "Smileys and emotions",
+      "People",
+      "Animals and nature",
+      "Food and drink",
+      "Travel and places",
+      "Activities and events",
+      "Objects",
+      "Symbols",
+      "Flags",
+    ]
+
+    function activeGroup() {
+      const defaultGroup = groups[0]
+      const searchParam = new URLSearchParams(location.search)
+      const groupSearch = searchParam.get('group')
+
+      if (!groupSearch) {
+        return defaultGroup
+      }
+
+      const index = parseInt(groupSearch)
+      if (isNaN(index)) {
+        return defaultGroup
+      }
+
+      if (index > 0 && index < groups.length) {
+        return groups[index]
+      }
+
+      return defaultGroup
+    }
+
+
+
+    async function init() {
+      const ordering = await (await fetch('https://cdn.jsdelivr.net/gh/googlefonts/emoji-metadata@main/emoji_15_0_ordering.json')).json();
+
+      document.body.innerHTML += ordering
+        .filter(({ group }) => group == activeGroup())
+        .map(({ group, emoji }) => `
+    <div class="grid__group">
+      <div class="grid__group-emojis">
+        ${emoji.map(({ base }) => `
+          <div class="emoji__div">
+            <div class="grid__emoji font-noto-color-emoji" data-value="${base[0]}">&#${base[0]};</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>`).join('');
+    }
+
+    init();
+  </script>
+</body>
+
+</html>

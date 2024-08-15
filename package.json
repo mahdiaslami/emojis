@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "puppeteer": "^23.1.0",
+    "slugify": "^1.6.6"
+  }
+}
